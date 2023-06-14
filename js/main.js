@@ -62,8 +62,8 @@ fetch("/data.json")
           },
           onClick: function () {},
         }).showToast();
-        // sumarTodo();
-        // guardar();
+        sumarTodo();
+        guardar();
         
       });
       
