@@ -1,0 +1,72 @@
+[
+      {
+        "id": 1,
+        "nombre": "Planta 1",
+        "precio": 1000,
+        "img": "./assets/images/galeria05-640x503.webp",
+        "stock": 1
+      },
+      {
+        "id": 2,
+        "nombre": "Planta 2",
+        "precio": 2000,
+        "img": "./assets/images/galeria03-640x503.webp",
+        "stock": 1
+      },
+      {
+        "id": 3,
+        "nombre": "Planta 3",
+        "precio": 3000,
+        "img": "./assets/images/galeria03-640x503.webp",
+        "stock": 1
+      },
+      {
+        "id": 4,
+        "nombre": "Planta 4",
+        "precio": 4000,
+        "img": "./assets/images/galeria04-640x360.webp",
+        "stock": 1
+      },
+      {
+        "id": 5,
+        "nombre": "Planta 5",
+        "precio": 5000,
+        "img": "./assets/images/galeria04-640x360.webp",
+        "stock": 1
+      },
+      {
+        "id": 6,
+        "nombre": "Planta 6",
+        "precio": 2500,
+        "img": "./assets/images/galeria04-640x360.webp",
+        "stock": 1
+      },
+      {
+        "id": 7,
+        "nombre": "Planta 7",
+        "precio": 6000,
+        "img": "./assets/images/galeria04-640x360.webp",
+        "stock": 1
+      },
+      {
+        "id": 8,
+        "nombre": "Planta 8",
+        "precio": 7500,
+        "img": "./assets/images/galeria04-640x360.webp",
+        "stock": 1
+      },
+      {
+        "id": 9,
+        "nombre": "Planta 9",
+        "precio": 1200,
+        "img": "./assets/images/galeria04-640x360.webp",
+        "stock": 1
+      },
+      {
+        "id": 10,
+        "nombre": "Planta 10",
+        "precio": 1900,
+        "img": "./assets/images/galeria04-640x360.webp",
+        "stock": 1
+      }
+    ]
