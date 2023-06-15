@@ -16,7 +16,7 @@ let productosSeleccionados = [];
 
 //aca traigo la data de los productos
 
-fetch("/data.json")
+fetch("https://github.com/AleBa86/entregaFinalJs43070BaezAlejandro/blob/6b97c4355b8eea3b81639f831468057b87156332/data.json")
   .then((res) => res.json())
   .then((json) => {
     //recorro el arreglo
