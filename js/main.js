@@ -16,20 +16,15 @@ let productosSeleccionados = [];
 
 //aca traigo la data de los productos
 
-fetch("https://github.com/AleBa86/entregaFinalJs43070BaezAlejandro/blob/6b97c4355b8eea3b81639f831468057b87156332/data.json",
-{ method: 'GET',
-headers: misCabeceras,
-mode: 'cors', // <---
-cache: 'default'
-})
+fetch("/data.json")
   .then((res) => res.json())
   .then((json) => {
-    mode: 'no-cors';
+    
     //recorro el arreglo
     for (const producto of json) {
       //creo y asigno un id a mis cards, para despues modifica el css
       let divProd = document.createElement("div");
-      divProd.setAttribute("id", "cards");
+      divProd.setAttribute("class", "cards");
       //armo la card con la data q quiero mostrar
       divProd.innerHTML = `
                                             <h2>${producto.nombre}<h2/>
@@ -39,7 +34,7 @@ cache: 'default'
                                             `;
       //asigno la clase de bs para q quede en 3 cols
       divProd.className =
-        "col-4 m-1 card d-flex justify-content-between align-items-center ";
+        "col-4 card d-flex justify-content-between align-items-center ";
       // renderizo
       contenedor.appendChild(divProd);
       //agrego eventListener para click en boton agregar
@@ -137,7 +132,7 @@ const eliminarProd = (id) => {
 // con esto guardo los cambios, lo voy a comentar, a ver si se me ocurre algo mejor.
 function guardar() {
   //contenidoDelCarrito.innerHTML = "";
-  let almacenarCarrito = JSON.parse(localStorage.getItem("carrito"));
+  let almacenarCarrito = JSON.parse(localStorage.getItem("carrito")) || [];
   
   almacenarCarrito.forEach((element) => {
     agregadosAlCarrito(
