@@ -5,10 +5,14 @@ const contenidoDelCarrito = document.getElementById("contenidoCarrito");
 const precioTotal = document.getElementById("totalCompra");
 const agregados = document.getElementById("agregados");
 const botonCarrito = document.getElementById("botonDelCarrito");
-
+const cerrarModal = document.getElementById("cerrar");
+cerrarModal.addEventListener("click", () => {
+  location.reload();
+});
 //en este array guardo mis prod agregados al carrito
 let productosSeleccionados = [];
-console.log(productosSeleccionados+"---->test");
+
+//console.log(productosSeleccionados+"---->test");
 
 //aca traigo la data de los productos
 
@@ -32,22 +36,13 @@ fetch("/data.json")
         "col-4 m-1 card d-flex justify-content-between align-items-center ";
       // renderizo
       contenedor.appendChild(divProd);
-      //agrego eventListener para click en boton agregar, dispara toastify
+      //agrego eventListener para click en boton agregar
       let botonAgregar = document.getElementById(`agregar${producto.id}`);
       botonAgregar.addEventListener("click", () => {
-        
         //agregue timeout, xq necesito refrescar y al refrescar, no se muestra el tosty, con el timeOut, se llega a ver la tosty =)
-        //setTimeout('document.location.reload()',300)
+        setTimeout('document.location.reload()',300)
+      //llamo a toastify
         console.log(botonAgregar.id);
-        console.log(productosSeleccionados+"antes del push");
-        productosSeleccionados.push({
-            id: producto.id,
-              nombre: producto.nombre,
-              precio: producto.precio,
-              img: producto.img,
-              stock: producto.stock,
-        })
-        console.log(productosSeleccionados+"----->adentro del agergar prod");
         Toastify({
           text: `Agregaste ${producto.nombre}`,
           duration: 2000,
@@ -62,96 +57,113 @@ fetch("/data.json")
           },
           onClick: function () {},
         }).showToast();
-        sumarTodo();
-        guardar();
+        //llamo la funcion que guarda el objeto
+        const evaluarCantidades = productosSeleccionados.some((repetidos) => repetidos.id === producto.id);
+        if(evaluarCantidades){
+          productosSeleccionados.map((produ)=> {
+            if(produ.id === producto.id){
+              produ.stock++;
+            }
+          });
+        }else{
+        agregadosAlCarrito(
+          producto.id,
+          producto.nombre,
+          producto.precio,
+          producto.img,
+          producto.stock
+        );
+        }
+        localStorage.setItem("carrito", JSON.stringify(productosSeleccionados));
         
       });
       
     }
   });
 
-function sumarTodo() {
+  //console.log(cards +"a ver q trae");
+const agregadosAlCarrito = (id, nombre, precio, img, stock) => {
   
-//console.log(productosSeleccionados+"vamo a ver");
-  // let cantidad = Object.values(productosSeleccionados).reduce((acc, el) => acc + el.stock, 0);
-  // agregados.innerHTML = cantidad;
-  // console.log(cantidad);
-  // let todoElprecio = Object.values(productosSeleccionados).reduce((acc, el) => acc + (el.precio * el.stock), 0)
-  // precioTotal.innerHTML = todoElprecio;
-
-//pego lo sigueinte para modificar, lo anterior no modificar:
-
-let cantidad = productosSeleccionados.reduce((acc, el) => acc + el.stock, 0);
-  agregados.innerHTML = cantidad;
-  console.log(cantidad);
-  let todoElprecio = productosSeleccionados.reduce((acc, el) => acc + (el.precio * el.stock), 0)
-  precioTotal.innerHTML = todoElprecio;
-
-  //console.log(todoElprecio+"todo el precio");
+  let prod = {
+    id: id,
+    nombre: nombre,
+    precio: precio,
+    img: img,
+    stock: stock,
+  };
+  //console.log(prod.precio);
+  productosSeleccionados.push(prod);
+  localStorage.setItem("carrito", JSON.stringify(productosSeleccionados));
+  calcularTotal();
+  calcularCantidad();
   
-}
+};
 
-// esta es la que funciona
+// con esta funcion sumo y "resto"el precio total del carrito
+  function calcularTotal() {
+    let actualizarCarrito = JSON.parse(localStorage.getItem("carrito"));
+    let resultado = 0;
+    actualizarCarrito.forEach((item) => {
+      resultado += (item.precio * item.stock);
+      
+      return resultado;
+    });
+    precioTotal.innerHTML = resultado;
+  }
+// con esta funcion cuento la cantidad de productos distintos que estan en el boton carrito
+  function calcularCantidad() {
+  agregados.innerText = productosSeleccionados.length;
+  }
+
+//esta funcion trae lo que esta almacenado en el localstorage y elimina los productos del id seleccionado
 const eliminarProd = (id) => {
+  //contenidoDelCarrito.innerHTML = "";
   let json = localStorage.getItem("carrito");
   productosSeleccionados = JSON.parse(json);
-  
- 
+
   let prodABorrar = productosSeleccionados.filter(
     (carrito) => carrito.id != id
   );
   localStorage.setItem("carrito", JSON.stringify(prodABorrar));
-  sumarTodo();
-  
- // guardar();
-  
-  //location.reload();
+
 };
 
-// const eliminarProd = (id) => {
-//   let obtenerCarrito = localStorage.getItem("carrito");
-//   productosSeleccionados = JSON.parse(obtenerCarrito);
-  
-//   productosSeleccionados.find((element) => element.id);
-//   productosSeleccionados = productosSeleccionados.filter((carrito) => carrito.id !== productosSeleccionados
-//   );
-//   sumarTodo();
-//   localStorage.setItem("carrito", JSON.stringify(productosSeleccionados));
-  
-//   guardar();
-//   //location.reload();
-// };
-
 // con esto guardo los cambios, lo voy a comentar, a ver si se me ocurre algo mejor.
-const guardar = () => {
-  contenidoDelCarrito.innerHTML = "";
-
-    productosSeleccionados.forEach((element) => {
-      console.log(productosSeleccionados+"almacenarcarrito");
-      let divTest = document.createElement("div");
-      divTest.innerHTML = `
-        
-        <h2>${element.nombre}</h2>
-        <img class="img-fluid" src="${element.img}"></img>
-        <h5>Precio: $${element.precio}</h5>
-        <button id="eliminar${element.id}" type="button" class="btn btn-outline-danger d-grid gap-2 col-6 mx-auto mt-2 mb-2">Quitar del Carrito</button>
-        `;
-        
-        
-      contenidoDelCarrito.appendChild(divTest);
-      localStorage.setItem("carrito", JSON.stringify(productosSeleccionados)); 
-      sumarTodo();
-          //voy a llamar al boton eliminar
+function guardar() {
+  //contenidoDelCarrito.innerHTML = "";
+  let almacenarCarrito = JSON.parse(localStorage.getItem("carrito"));
+  
+  almacenarCarrito.forEach((element) => {
+    agregadosAlCarrito(
+      element.id,
+      element.nombre,
+      element.precio,
+      element.img,
+      element.stock
+    );
+    let divTest = document.createElement("div");
+    divTest.innerHTML = `
+      
+      <h2>${element.nombre}</h2>
+      <img class="img-fluid" src="${element.img}"></img>
+      <p>Precio: $${element.precio}</p><p>Cantidad: ${element.stock}</p><p>Total por producto: ${element.precio * element.stock}</p>
+      <button id="eliminar${element.id}" type="button" class="btn btn-outline-danger d-grid gap-2 col-6 mx-auto mt-2 mb-2">Quitar del Carrito</button>
+      <hr />
+      `;
+      
+      
+    contenidoDelCarrito.appendChild(divTest);
+    
+    //voy a llamar al boton eliminar
 
     let botonEliminarProd = document.getElementById(`eliminar${element.id}`);
     //agrego eventlistener al hacer click
     botonEliminarProd.addEventListener("click", () => {
-      //invoco a la función borrar
+      //llamo a la función borrar
       eliminarProd(element.id);
-      //console.log(eliminarProd+"--> entre al eliminarProd");
-      sumarTodo();
-      //console.log(sumarTodo+"--entre al sumarTodo");
-      divTest.remove();
+      //llamo a las funciones q suman los totales
+      calcularCantidad();
+      calcularTotal();
       
       
       //y llamo a un tosty q me muestre lo q borre
@@ -170,23 +182,10 @@ const guardar = () => {
         onClick: function () {},
       }).showToast();
       //borro el objeto creado en el carrito
-      
-      //restarTodo();
-      //location.reload();
-
-    })
-
-    // guardar();
+      divTest.remove();
+    });
+    
   });
 }
 
-//guardar();
-
-/* 
-
-me falta lograr que el reduce, muestre un solo html cuando elijo el mismo producto y aumente su cantidad seleccionada
-me falta que se resten bien los productos, cuando los elimino. En realidad se descuentan pero es como que va atrasado
-de este ultimo punto, se desprende, que cuando elimino todo lo del carrito, siempre me queda en el boton, el 1, x eso
-creo que va como "atrasado"
-
-*/
+guardar();
